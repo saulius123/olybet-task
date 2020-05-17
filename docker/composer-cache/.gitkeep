@@ -1,0 +1,1 @@
+docker run --init  --env COMPOSER_CACHE_DIR=testas -v "$(pwd)/tools:/tools" --rm -v "$(pwd):/project" -v "$(pwd)/tmp-phpqa:/tmp" -w "/project"  --user $(id -u):$(id -g) -it jakzal/phpqa composer install --ignore-platform-reqs --no-scripts --no-interaction

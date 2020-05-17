@@ -1,0 +1,29 @@
+version: '2'
+services:
+  mysql:
+    container_name: ${CONTAINER_NAME_MYSQL}
+    build: ./mysql
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - ${CONTAINER_PORT_MYSQL}:3306
+    volumes:
+      - ./db:/var/lib/mysql
+  php-apache:
+    container_name: ${CONTAINER_NAME_PHP}
+    build: ./php-apache
+    ports:
+      - ${CONTAINER_PORT_PHP}:80
+    volumes:
+      - ${PROJECT_ROOT_LOCAL}:${PROJECT_ROOT_CONTAINER}
+      - ./php-apache/conf/000-default.conf:/etc/apache2/sites-available/000-default.conf
+      - ./php-apache/conf/php.ini:/usr/local/etc/php/php.ini
+    depends_on:
+      - mysql
+    working_dir: ${PROJECT_ROOT_CONTAINER}
+
+    environment:
+      - APP_ENV_NAME=${CONTAINER_NAME_REDIS}
+volumes:
+  db-oxylab-task:
