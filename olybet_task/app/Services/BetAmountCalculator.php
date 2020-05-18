@@ -4,7 +4,7 @@ namespace App\Services;
 
 class BetAmountCalculator
 {
-    public function calculateBetAmount($data): float
+    public function calculateBetAmount(array $data): float
     {
         $globalOdds = 1;
 
