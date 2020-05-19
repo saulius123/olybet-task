@@ -18,20 +18,20 @@ class BetManager
         $this->betAmountCalculator = $betAmountCalculator;
     }
 
-    public function addBet(array $data): ?array
+    public function addBet(array $data): bool
     {
         try {
             DB::beginTransaction();
-            $createdModels = $this->createBetModels($data);
+            $this->createBetModels($data);
             DB::commit();
-            return $createdModels;
+            return true;
         } catch (\PDOException $e) {
             DB::rollBack();
-            return null;
+            return false;
         }
     }
 
-    public function createBetModels(array $data): array
+    public function createBetModels(array $data): void
     {
         $betAmount = $this->betAmountCalculator->calculateBetAmount($data);
 
@@ -45,19 +45,12 @@ class BetManager
         $player->balance = $player->balance - $betAmount;
         $player->save();
 
-        $balanceTransaction = $this->createBalanceTransaction($data, $player, $amountBefore);
-        $bet = $this->createBet($data);
-        $betSelections = $this->createBetSelections($data, $bet);
-
-        return [
-            'player' => $player,
-            'balanceTransaction' => $balanceTransaction,
-            'bet' => $bet,
-            'betSelections' => $betSelections
-        ];
+        $this->createBalanceTransaction($data, $player, $amountBefore);
+        $this->createBet($data);
+        $this->createBetSelections($data, $bet);
     }
 
-    private function createBalanceTransaction(array $data, Player $player, float $amountBefore): BalanceTransaction
+    private function createBalanceTransaction(array $data, Player $player, float $amountBefore): void
     {
         $balanceTransaction = new BalanceTransaction();
         $balanceTransaction->player_id = $player->id;
@@ -65,32 +58,24 @@ class BetManager
         $balanceTransaction->amount_before = $amountBefore;
         $balanceTransaction->save();
 
-        return $balanceTransaction;
     }
 
-    private function createBet(array $data): Bet
+    private function createBet(array $data): void
     {
         $bet = new Bet();
         $bet->stake_amount = $data['stake_amount'];
         $bet->created_at = date("Y-m-d H:i:s");
         $bet->save();
-
-        return $bet;
     }
 
-    private function createBetSelections(array $data, Bet $bet): array
+    private function createBetSelections(array $data, Bet $bet): void
     {
-        $selections = [];
         foreach ($data['selections'] as $selectionDatum) {
             $selection = new BetSelection();
             $selection->bet_id = $bet->id;
             $selection->selection_id = $selectionDatum['id'];
             $selection->odds = $selectionDatum['odds'];
             $selection->save();
-
-            $selections[] = $selection;
         }
-
-        return $selections;
     }
 }

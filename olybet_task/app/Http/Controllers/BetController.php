@@ -27,13 +27,14 @@ class BetController extends Controller
         $errors = $this->betValidator->validateRequest($request);
 
         if (count($errors) > 0) {
-            return response()->json([$errors], 400);
+            return response()->json($errors, 400);
         }
 
         $success = $this->betManager->addBet($request->toArray());
 
-
-
-        return null;
+        if ($success === false) {
+            $this->betValidator->addGlobalError('Unknown error', 0);
+            return response()->json($this->betValidator->getErrors(), 400);
+        }
     }
 }
