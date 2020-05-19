@@ -8,6 +8,8 @@ class Player extends Model
 {
     protected $table = 'player';
 
+    protected $primaryKey = 'id';
+
     /**
      * @var bool
      */

@@ -2,17 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\BetManager;
 use App\Validators\BetValidator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class BetController extends Controller
 {
+    /** @var BetManager  */
+    private $betManager;
+
     /** @var BetValidator */
     private $betValidator;
 
-    public function __construct(BetValidator $betValidator)
+    public function __construct(BetValidator $betValidator, BetManager $betManager)
     {
+        $this->betManager = $betManager;
         $this->betValidator = $betValidator;
     }
 
@@ -24,6 +29,9 @@ class BetController extends Controller
         if (count($errors) > 0) {
             return response()->json([$errors], 400);
         }
+
+        $success = $this->betManager->addBet($request->toArray());
+
 
 
         return null;
