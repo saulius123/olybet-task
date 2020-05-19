@@ -3,6 +3,7 @@
 namespace App\Validators;
 
 
+use App\Player;
 use App\Services\BetAmountCalculator;
 use Illuminate\Http\Request;
 
@@ -103,6 +104,7 @@ class BetValidator
         $this->validateSelectionNumber($data);
         $this->validateSelections($data);
         $this->validateWinAmount($data);
+        $this->validatePlayerBalance($data);
     }
 
     private function validateStakeAmounts(array $data): void
@@ -162,6 +164,17 @@ class BetValidator
         $amount = $this->betAmountCalculator->calculateBetAmount($data);
         if ($amount > self::MAX_WIN_AMOUNT) {
             $this->addGlobalError(sprintf('Maximum win amount is %s', self::MAX_WIN_AMOUNT), 9);
+        }
+    }
+
+    private function validatePlayerBalance(array $data): void
+    {
+        $player = Player::find($data['player_id']);
+        if ($player === null) {
+            $player = new Player();
+        }
+        if ($data['stake_amount'] > $player->balance ) {
+            $this->addGlobalError('Insufficient balance', 11);
         }
     }
 }
