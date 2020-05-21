@@ -2,10 +2,10 @@
 -- version 5.0.2
 -- https://www.phpmyadmin.net/
 --
--- Host: oxylab-task-group-mysql
--- Generation Time: May 15, 2020 at 02:49 AM
--- Server version: 8.0.13
--- PHP Version: 7.3.17
+-- Host: localhost
+-- Generation Time: May 21, 2020 at 08:54 AM
+-- Server version: 5.7.30-0ubuntu0.18.04.1
+-- PHP Version: 7.3.18-1+ubuntu18.04.1+deb.sury.org+1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,127 +18,255 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `oxylab_task`
+-- Database: `olybet_task`
 --
+CREATE DATABASE IF NOT EXISTS `olybet_task` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `olybet_task`;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `asset`
+-- Table structure for table `balance_transaction`
 --
 
-CREATE TABLE `asset` (
-  `id` int(11) NOT NULL,
-  `label` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `currency` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `value` decimal(20,4) NOT NULL,
-  `user_id` int(11) NOT NULL
+CREATE TABLE `balance_transaction` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `player_id` bigint(20) UNSIGNED NOT NULL,
+  `amount` double(10,2) NOT NULL,
+  `amount_before` double(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `asset`
+-- Dumping data for table `balance_transaction`
 --
 
-INSERT INTO `asset` (`id`, `label`, `currency`, `value`, `user_id`) VALUES
-(1, 'Usb stick', 'BTC', '0.0020', 1),
-(2, 'Usb stick', 'BTC', '1.0000', 1),
-(3, 'Usb stick2', 'BTC', '1.0000', 1),
-(4, 'Usb stick2', 'BTC', '1.0000', 1),
-(5, 'Usb stick2', 'BTC', '1.0000', 1),
-(6, 'Usb stick2', 'BTC', '1.0000', 1),
-(7, 'some other asset', 'IOTA', '3.0000', 1),
-(8, 'Usb stick2', 'ETH', '4.0000', 1),
-(9, 'Usb stick2', 'BTC', '1.0000', 2);
+INSERT INTO `balance_transaction` (`id`, `player_id`, `amount`, `amount_before`) VALUES
+(1, 2, 820.97, 1000.00),
+(2, 2, 641.94, 820.97);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `migration_versions`
+-- Table structure for table `bet`
 --
 
-CREATE TABLE `migration_versions` (
-  `version` varchar(14) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `executed_at` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)'
+CREATE TABLE `bet` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `stake_amount` double(10,2) UNSIGNED NOT NULL,
+  `created_at` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `migration_versions`
+-- Dumping data for table `bet`
 --
 
-INSERT INTO `migration_versions` (`version`, `executed_at`) VALUES
-('20200512200458', '2020-05-12 20:08:54'),
-('20200512215057', '2020-05-12 21:54:41');
+INSERT INTO `bet` (`id`, `stake_amount`, `created_at`) VALUES
+(1, 88.00, '2020-05-21 05:20:03'),
+(2, 88.00, '2020-05-21 05:52:44');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user`
+-- Table structure for table `bet_selections`
 --
 
-CREATE TABLE `user` (
-  `id` int(11) NOT NULL,
-  `username` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+CREATE TABLE `bet_selections` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `bet_id` bigint(20) UNSIGNED NOT NULL,
+  `selection_id` bigint(20) UNSIGNED NOT NULL,
+  `odds` double(20,3) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `bet_selections`
+--
+
+INSERT INTO `bet_selections` (`id`, `bet_id`, `selection_id`, `odds`) VALUES
+(1, 1, 1, 1.601),
+(2, 1, 2, 1.105),
+(3, 1, 3, 1.150),
+(4, 2, 1, 1.601),
+(5, 2, 2, 1.105),
+(6, 2, 3, 1.150);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `failed_jobs`
+--
+
+CREATE TABLE `failed_jobs` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `connection` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `queue` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `exception` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `failed_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `migrations`
+--
+
+CREATE TABLE `migrations` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `batch` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `migrations`
+--
+
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
+(1, '2014_10_12_000000_create_users_table', 1),
+(2, '2019_08_19_000000_create_failed_jobs_table', 1),
+(3, '2020_05_18_131544_create_players_table', 1),
+(4, '2020_05_18_132141_create_balance_transactions_table', 1),
+(5, '2020_05_18_140445_create_bets_table', 1),
+(6, '2020_05_18_141928_create_bet_selections_table', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `player`
+--
+
+CREATE TABLE `player` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `balance` double(10,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `player`
+--
+
+INSERT INTO `player` (`id`, `balance`) VALUES
+(2, 641.94);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `users`
+--
+
+CREATE TABLE `users` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email_verified_at` timestamp NULL DEFAULT NULL,
   `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `mail` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `user`
---
-
-INSERT INTO `user` (`id`, `username`, `password`, `mail`, `name`) VALUES
-(1, 'saulius', '$2y$10$YIxSTBH2YIsijQ/RgAMsOugI6Mq74Si1QhLc/2pG5boLN1Th4CCtm', 'saulius@gmail.com', 'saulius'),
-(2, 'saulius2', '$2y$10$YIxSTBH2YIsijQ/RgAMsOugI6Mq74Si1QhLc/2pG5boLN1Th4CCtm', 'saulius2@gmail.com', 'saulius');
 
 --
 -- Indexes for dumped tables
 --
 
 --
--- Indexes for table `asset`
+-- Indexes for table `balance_transaction`
 --
-ALTER TABLE `asset`
+ALTER TABLE `balance_transaction`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `IDX_2AF5A5CA76ED395` (`user_id`);
+  ADD KEY `balance_transaction_player_id_foreign` (`player_id`);
 
 --
--- Indexes for table `migration_versions`
+-- Indexes for table `bet`
 --
-ALTER TABLE `migration_versions`
-  ADD PRIMARY KEY (`version`);
-
---
--- Indexes for table `user`
---
-ALTER TABLE `user`
+ALTER TABLE `bet`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `bet_selections`
+--
+ALTER TABLE `bet_selections`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `bet_selections_bet_id_foreign` (`bet_id`);
+
+--
+-- Indexes for table `failed_jobs`
+--
+ALTER TABLE `failed_jobs`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `migrations`
+--
+ALTER TABLE `migrations`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `player`
+--
+ALTER TABLE `player`
+  ADD KEY `player_id_index` (`id`);
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `users_email_unique` (`email`);
 
 --
 -- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT for table `asset`
+-- AUTO_INCREMENT for table `balance_transaction`
 --
-ALTER TABLE `asset`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+ALTER TABLE `balance_transaction`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT for table `user`
+-- AUTO_INCREMENT for table `bet`
 --
-ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+ALTER TABLE `bet`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `bet_selections`
+--
+ALTER TABLE `bet_selections`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT for table `failed_jobs`
+--
+ALTER TABLE `failed_jobs`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `migrations`
+--
+ALTER TABLE `migrations`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- Constraints for dumped tables
 --
 
 --
--- Constraints for table `asset`
+-- Constraints for table `balance_transaction`
 --
-ALTER TABLE `asset`
-  ADD CONSTRAINT `FK_2AF5A5CA76ED395` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
+ALTER TABLE `balance_transaction`
+  ADD CONSTRAINT `balance_transaction_player_id_foreign` FOREIGN KEY (`player_id`) REFERENCES `player` (`id`);
+
+--
+-- Constraints for table `bet_selections`
+--
+ALTER TABLE `bet_selections`
+  ADD CONSTRAINT `bet_selections_bet_id_foreign` FOREIGN KEY (`bet_id`) REFERENCES `bet` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
