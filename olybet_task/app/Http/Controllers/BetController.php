@@ -36,5 +36,7 @@ class BetController extends Controller
             $this->betValidator->addGlobalError('Unknown error', 0);
             return response()->json($this->betValidator->getErrors(), 400);
         }
+
+        return null;
     }
 }
