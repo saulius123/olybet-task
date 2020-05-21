@@ -46,7 +46,7 @@ class BetManager
         $player->save();
 
         $this->createBalanceTransaction($data, $player, $amountBefore);
-        $this->createBet($data);
+        $bet = $this->createBet($data);
         $this->createBetSelections($data, $bet);
     }
 
@@ -60,12 +60,14 @@ class BetManager
 
     }
 
-    private function createBet(array $data): void
+    private function createBet(array $data): BET
     {
         $bet = new Bet();
         $bet->stake_amount = $data['stake_amount'];
         $bet->created_at = date("Y-m-d H:i:s");
         $bet->save();
+
+        return $bet;
     }
 
     private function createBetSelections(array $data, Bet $bet): void
