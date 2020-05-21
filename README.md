@@ -101,4 +101,4 @@ docker-compose up
 ```bash
 composer install
 ```
-##### 3. Then point your browser to `localhost:8090`
+##### 3. Then point your browser to `localhost:8090`. The database is preloaded and you can make calls to local environment.
